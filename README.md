@@ -8,10 +8,10 @@
 - 2023.12.12 ~ 2023.12.27
 
 ### :family_man_woman_girl_boy:개발 인원
-- 이수홍(팀장)
-- **이헌구**
-- 이승우
-- 조동현
+- 이수홍(팀장) - 로그인 및 회원가입, 마이페이지
+- **이헌구** - 프로젝트 소개 및 모집, QnA 게시판, 실시간 채팅
+- 이승우 - 멘토링(메인페이지), 관리자
+- 조동현 - 포인트 충전, 관리자
 
 ### :gear:개발 환경
 - **언어**: Java(JDK 17), JavaScript
@@ -47,7 +47,7 @@
 - 포인트 환전 신청
 
 <details markdown="1">
-  <summary><b>멘토링(메인 페이지)</b></summary>
+  <summary><b>멘토링(메인페이지)</b></summary>
   <div>
     <img src="https://github.com/portLee/mentors/assets/146898974/3cc8388d-359c-498e-b5f3-dac1236a6e74">
     <img src="https://github.com/portLee/mentors/assets/146898974/93ee395f-a8e9-4216-ab9d-451632cfe388">
