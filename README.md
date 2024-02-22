@@ -22,52 +22,91 @@
 
 ## :pushpin:주요 기능
 
-#### 로그인 및 회원가입
-![Mentors프로젝트15](https://github.com/portLee/mentors/assets/146898974/dd25d049-2260-4b81-94eb-600dcb3d0cc7)
+<details markdown="1">
+  <summary><b>로그인 및 회원가입</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/dd25d049-2260-4b81-94eb-600dcb3d0cc7">
+  </div>
+</details>
+
 - 카카오 로그인 API 연동
 - 회원가입시 유효성 검사
 - 회원가입시 이메일 인증
 
-#### 마이페이지
-![Mentors프로젝트16](https://github.com/portLee/mentors/assets/146898974/42011a52-112b-42bd-a6a5-2d2d6e05ae43)
-![Mentors프로젝트17](https://github.com/portLee/mentors/assets/146898974/fbc2ce44-9086-4fcf-9290-edddb7665823)
+<details markdown="1">
+  <summary><b>마이페이지</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/42011a52-112b-42bd-a6a5-2d2d6e05ae43">
+    <img src="https://github.com/portLee/mentors/assets/146898974/fbc2ce44-9086-4fcf-9290-edddb7665823">
+  </div>
+</details>
+
 - 커리어넷 Open API 연동
 - 멘토 신청
 - 회원정보 수정
 - 포인트 환전 신청
 
-#### 멘토링(메인 페이지)
-![Mentors프로젝트11](https://github.com/portLee/mentors/assets/146898974/3cc8388d-359c-498e-b5f3-dac1236a6e74)
-![Mentors프로젝트12](https://github.com/portLee/mentors/assets/146898974/93ee395f-a8e9-4216-ab9d-451632cfe388)
+<details markdown="1">
+  <summary><b>멘토링(메인 페이지)</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/3cc8388d-359c-498e-b5f3-dac1236a6e74">
+    <img src="https://github.com/portLee/mentors/assets/146898974/93ee395f-a8e9-4216-ab9d-451632cfe388">
+  </div>
+</details>
+
 - 멘토 랭킹
 - 멘토링 검색(키워드, 언어 등 다중 검색)
 - 멘토링 목록 정렬(무료, 유료)
 - 멘토링 신청 및 수강평
 
-#### 프로젝트 소개 및 모집, QnA 게시판
-![Mentors프로젝트13](https://github.com/portLee/mentors/assets/146898974/cb4b0500-5733-4dfc-8f62-922668418a98)
+<details markdown="1">
+  <summary><b>프로젝트 소개 및 모집, QnA 게시판</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/cb4b0500-5733-4dfc-8f62-922668418a98">
+  </div>
+</details>
+
 - 게시글 검색(태그 및 키워드 다중 검색)
 - 게시글 목록 정렬(최신순, 답변많은순, 좋아요순)
 - 게시글 작성, 읽기, 수정, 삭제(CRUD)
 - 게시글 좋아요(추천)
 - 태그 등록 및 수정
 
-#### 댓글 및 대댓글
-![Mentors프로젝트14](https://github.com/portLee/mentors/assets/146898974/2e03a449-b7a5-4e93-9416-2ec59f88d601)
+<details markdown="1">
+  <summary><b>댓글 및 대댓글</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/2e03a449-b7a5-4e93-9416-2ec59f88d601">
+  </div>
+</details>
+
 - 댓글 및 대댓글 작성, 읽기, 수정, 삭제(CRUD)
 - 댓글 채택
 
-#### 실시간 채팅
-![Mentors프로젝트21](https://github.com/portLee/mentors/assets/146898974/3d167cf0-799a-4cae-91ad-de0a11edb416)
+<details markdown="1">
+  <summary><b>실시간 채팅</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/3d167cf0-799a-4cae-91ad-de0a11edb416">
+  </div>
+</details>
 
-#### 포인트 충전
-![Mentors프로젝트22](https://github.com/portLee/mentors/assets/146898974/22f01604-7346-400e-bf9c-3e078ac777aa)
+<details markdown="1">
+  <summary><b>포인트 충전</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/22f01604-7346-400e-bf9c-3e078ac777aa">
+  </div>
+</details>
+
 - TossPayments API 연동
 
-#### 관리자
-![Mentors프로젝트18](https://github.com/portLee/mentors/assets/146898974/3fd05829-4fbd-4e37-bacc-489380abf5a4)
-![Mentors프로젝트19](https://github.com/portLee/mentors/assets/146898974/46008e0c-7742-4b4d-8172-f10271a02e3f)
-![Mentors프로젝트20](https://github.com/portLee/mentors/assets/146898974/d80c0cd8-1ecc-4df6-94a3-57a19a8b29a4)
+<details markdown="1">
+  <summary><b>관리자</b></summary>
+  <div>
+    <img src="https://github.com/portLee/mentors/assets/146898974/3fd05829-4fbd-4e37-bacc-489380abf5a4">
+    <img src="https://github.com/portLee/mentors/assets/146898974/46008e0c-7742-4b4d-8172-f10271a02e3f">
+    <img src="https://github.com/portLee/mentors/assets/146898974/d80c0cd8-1ecc-4df6-94a3-57a19a8b29a4">
+  </div>
+</details>
+
 - 방문자 및 결제 통계
 - 포인트 환전 신청 관리
 - 멘토 신청 목록 관리
