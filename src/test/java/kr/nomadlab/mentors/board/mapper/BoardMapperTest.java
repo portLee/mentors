@@ -21,19 +21,27 @@ class BoardMapperTest {
     void selectBoardListTest() {
         String sort = "reply";
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
-                .type("twc")
-                .keyword("등록")
-                .sort(sort)
-                .hashTag("Tag,등록")
                 .build();
+
+        // 시작 시간 기록
+        long startTime = System.currentTimeMillis();
+
         List<BoardVO> boardVOList = boardMapper.selectBoardList(pageRequestDTO);
         boardVOList.forEach(log::info);
+
+        // 종료 시간 기록
+        long endTime = System.currentTimeMillis();
+
+        // 실행 시간 계산
+        long executionTime = endTime - startTime;
+
+        System.out.println("쿼리 실행 시간: " + executionTime + "ms");
 
     }
 
     @Test
     void insertLikeTest() {
-        Long boardNo = 18L;
+        Long boardNo = 3L;
         Long mNo = 2L;
         BoardLikeVO boardLikeVO = BoardLikeVO.builder()
                 .boardNo(boardNo)
@@ -52,8 +60,8 @@ class BoardMapperTest {
 
     @Test
     void insertTagTest() {
-        Long boardNo = 17L;
-        String tagName = "Tag";
+        Long boardNo = 3L;
+        String tagName = "Tag Test1";
         HashTagVO hashTagVO = HashTagVO.builder()
                 .boardNo(boardNo)
                 .tagName(tagName)

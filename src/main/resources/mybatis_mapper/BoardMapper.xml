@@ -16,9 +16,15 @@
         <!-- boardReply, boardLike에 대한 매핑 -->
         <result property="replyCount" column="replyCount" />
         <result property="likeCount" column="likeCount" />
-        <!-- HashTag에 대한 매핑 -->
-        <collection property="tagVOList" column="boardNo" ofType="kr.nomadlab.mentors.board.domain.HashTagVO"
-                    select="selectTagList" />
+        <!-- HashTag에 대한 매핑 - (Nested) Select -->
+<!--        <collection property="tagVOList" column="boardNo" ofType="kr.nomadlab.mentors.board.domain.HashTagVO"-->
+<!--                    select="selectTagList" />-->
+        <!-- HashTag에 대한 매핑 - (Nested) Result -->
+        <collection property="tagVOList" ofType="kr.nomadlab.mentors.board.domain.HashTagVO">
+            <id property="htNo" column="htNo"/>
+            <result property="boardNo" column="boardNo"/>
+            <result property="tagName" column="tagName"/>
+        </collection>
     </resultMap>
 
     <select id="selectTagList" resultType="kr.nomadlab.mentors.board.domain.HashTagVO" >
@@ -31,14 +37,22 @@
     <select id="selectBoardList" resultMap="boardResultMap">
         SELECT
         `b`.*,
-        COUNT(DISTINCT `br`.`rno`) AS replyCount,
-        COUNT(DISTINCT `bl`.`blNo`) AS likeCount
+        (SELECT COUNT(DISTINCT br.rno)
+        FROM boardReply br
+        WHERE br.boardNo = b.boardNo) AS replyCount,
+        (SELECT COUNT(DISTINCT bl.blNo)
+        FROM boardLike bl
+        WHERE bl.boardNo = b.boardNo) AS likeCount,
+--         COUNT(DISTINCT `br`.`rno`) AS replyCount,
+--         COUNT(DISTINCT `bl`.`blNo`) AS likeCount
+        `ht`.`htNo`,
+        `ht`.`tagName`
         FROM `board` AS `b`
         LEFT JOIN `boardReply` AS `br` ON `b`.`boardNo` = `br`.`boardNo`
         LEFT JOIN `boardLike` AS `bl` ON `b`.`boardNo` = `bl`.`boardNo`
         LEFT JOIN `hashTag` AS `ht` ON `b`.`boardNo` = `ht`.`boardNo`
         <include refid="search"/>
-        GROUP BY `b`.`boardNo`
+--         GROUP BY `b`.`boardNo`
         ORDER BY
         <!-- 정렬 조건 -->
         <choose>
