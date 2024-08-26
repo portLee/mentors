@@ -4,9 +4,26 @@
       layout:decorate="~{layout/inc.html}">
 <head>
     <meta charset="UTF-8">
-    <title>팀 프로젝트 소개</title>
+    <title>팀 프로젝트 모집</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@600&family=Do+Hyeon&family=IBM+Plex+Sans+KR&family=Orbit&family=Poor+Story&display=swap" rel="stylesheet">
+
 </head>
+
+<style layout:fragment="style">
+    #banner {
+        background-color: #cdf0f0;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 <body>
+<div layout:fragment="banner" id="banner">
+    <div style="text-align: left; width: 1300px;">
+        <h1 style="font-family: 'Orbit', sans-serif;">팀 프로젝트 모집</h1>
+    </div>
+</div>
 <div layout:fragment="content">
 
     <style>
@@ -15,7 +32,7 @@
         a { text-decoration: none; }
 
         main { padding-top: 50px; display: flex; }
-        main section { width: 100%; }
+        main section { width: 100%; max-width: 960px; }
         main ul { padding-left: 0 !important; }
         .left-side-menu { margin-top: 44px; margin-right: 40px; width: 168px; }
         .menu { min-width: 160px; }
@@ -45,6 +62,7 @@
         .project-container:hover { background-color: #f8f9fa; }
         .project-title { font-size: 21px; }
         .project-content { color: #495057; }
+        .project-content p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
         .tag-list { display: flex; }
         .tag-style { background-color: #eff3fa; border-radius: 0.5rem; padding: 4px 10px; margin: 5px 5px 5px 0;
             font-size: 13px; font-weight: 600; cursor: pointer; color: var(--bs-body-color); }
@@ -180,40 +198,13 @@
                 </li>
             </ul>
         </nav>
+    </main>
 </div>
 </body>
 
 <script layout:fragment="script" th:inline="javascript">
 
     document.addEventListener('DOMContentLoaded', function () {
-        // img 빼기
-        const projectContents = document.querySelectorAll('.project-content');
-
-        function filterImgTags(content) {
-            // 적절한 방법으로 DOM을 생성
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = content;
-
-            // <img> 태그를 찾아 제거
-            const imgTags = tempDiv.getElementsByTagName('img');
-            for (let i = imgTags.length - 1; i >= 0; i--) {
-                imgTags[i].parentNode.removeChild(imgTags[i]);
-            }
-
-            // 필터링된 내용을 반환
-            return tempDiv.innerHTML;
-        }
-
-        // 모든 board-content에 대해 작업
-        projectContents.forEach((projectContent) => {
-            const editorContent = projectContent.innerHTML;
-            const filteredContent = filterImgTags(editorContent);
-            console.log('edit: ', editorContent)
-            console.log('filter: ', filteredContent);
-
-            // 필터링된 내용을 해당 board-content에 다시 설정
-            projectContent.innerHTML = filteredContent;
-        });
 
         const formObj = document.querySelector("form[name=frmSearch]");
         const searchInput = document.getElementById('keyword'); // 검색창
@@ -340,6 +331,28 @@
 
                 formObj.submit();
             });
+        });
+
+        // 텍스트 필터링
+        const projectContents = document.querySelectorAll('.project-content');
+
+        function filterText(content) {
+            // 적절한 방법으로 DOM을 생성
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            tempDiv.innerHTML = `<p>${tempDiv.innerText}</p>`;
+
+            // 필터링된 내용을 반환
+            return tempDiv.innerHTML;
+        }
+
+        // 모든 board-content에 대해 작업
+        projectContents.forEach((projectContent) => {
+            const editorContent = projectContent.innerHTML;
+            const filteredContent = filterText(editorContent);
+
+            // 필터링된 내용을 해당 board-content에 다시 설정
+            projectContent.innerHTML = filteredContent;
         });
     });
 

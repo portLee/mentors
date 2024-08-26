@@ -14,6 +14,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script th:src="@{/js/scripts.js}"></script>
   <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@600&family=Do+Hyeon&family=IBM+Plex+Sans+KR&family=Orbit&family=Poor+Story&display=swap" rel="stylesheet">
+
   <style>
     /* 모달 스타일 */
     .notifyModal {
@@ -95,7 +97,7 @@
             <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-1 rounded" th:href="@{/mypage/menteeProfile(nickname=${#authentication.principal.getNickname()})}">마이페이지</a></li>
           </th:block>
           <th:block th:if="${#authentication.principal != 'anonymousUser' && #authentication.principal.getPasswd() != '1111'}"><!-- 회원 로그인 -->
-            <li class="nav-item mx-0 mx-lg-1"><span class="nav py-3 px-0 px-lg-3 rounded nicknameSpan">[<span style="font-weight: normal" th:text="${#authentication.principal.getNickname()}"></span>]보유 코인 : <span class="getCoin" th:text="${#authentication.principal.getCoin()}"></span>
+            <li class="nav-item mx-0 mx-lg-1"><span class="nav py-3 px-0 px-lg-3 rounded nicknameSpan">[<span style="font-weight: normal" th:text="${#authentication.principal.getNickname()}"></span>]보유 비타민 : <span class="getCoin" th:text="${#authentication.principal.getCoin()}"></span>
               <th:block sec:authorize="hasRole('ROLE_MENTEE')">
                 <button class="btn btn-sm btn-primary" onclick="window.location.href='/payments'" style="margin-left: 10px;">충전하기</button>
               </th:block>
@@ -178,10 +180,11 @@
   .chat-modal {
     display: none;
     position: fixed;
-    bottom: 20%;
-    right: 25px;
+    bottom: 5%;
+    right: 8rem;
 
-    width: 400px;
+    width: 350px;
+    height: fit-content;
     background-color: #B2C7D9;
     border: 1px solid #999;
     border-radius: 5px;
@@ -201,7 +204,7 @@
   }
 
   .chat-body {
-    height: 500px;
+    height: 450px;
     padding: 10px;
     overflow-y: auto;
     overscroll-behavior-y: contain;
@@ -237,8 +240,8 @@
     max-width: 70%;
     background-color: #fff;
     border-radius: 10px;
-    font-size: 14px;
-    padding: 8px;
+    font-size: 13px;
+    padding: 6px;
     word-break: break-all;
   }
 
@@ -320,7 +323,7 @@
 
   /* Style the chat list container */
   .chat-list {
-    width: 400px;
+    width: 350px;
     height: 60vh;
     overflow-y: auto;
     border: 1px solid #ddd;
@@ -331,8 +334,8 @@
     display: none;
 
     position: fixed;
-    bottom: 20%;
-    right: 25px;
+    bottom: 15%;
+    right: 8rem;
   }
 
   .chat-list h5 {
@@ -423,6 +426,20 @@
     background-color: #c0392b;
   }
 
+  #conversation button {
+    border: 1px solid #9a9a9a;
+    padding: 5px;
+    border-radius: 1rem;
+  }
+
+  #connect {
+    background-color: #0abe94;
+  }
+
+  #disconnect {
+    background-color: #ff0000;
+  }
+
 </style>
 
 <!-- 채팅방 -->
@@ -454,8 +471,8 @@
 <!-- 채팅목록 -->
 <div id="conversation" class="chat-list">
   <h5>채팅
-    <button id="connect">connect</button>
-    <button id="disconnect">disconnect</button>
+    <button id="connect"></button>
+    <button id="disconnect"></button>
   </h5>
   <div class="chat-list-inner"></div>
 </div>
@@ -522,9 +539,14 @@
   }
 
   async function handleChatItemClick(chat) {
+    if ($(".chat-modal").css("display") === "block") {
+      alert("채팅은 하나만 이용가능합니다. \n채팅방을 닫아주세요.");
+      return;
+    }
+
     $(".chat-body").html("");
     currentRoomId = chat.roomId;
-    console.log('Current Room ID: ' + currentRoomId);
+
 
     // 선택한 채팅방에 대한 정보 가져오기
     const result = await getRoomMessages(currentRoomId);
@@ -550,13 +572,13 @@
             }));
 
     // 채팅 입력란 초기화 및 모달 표시
-    $(".chat-input").val('');
     $('.chat-modal').show();
+    $(".chat-input").val('').focus();
     scrollToBottom();
   }
 
   function displayChatMembers(chatMembers) {
-    console.log('chatMembers: ', chatMembers);
+
     // 참여 회원 목록 초기화
     $('.chat-member-list').html("");
 
@@ -588,7 +610,7 @@
 
   function connect() {
     if (!isUserLoggedIn()) {
-      console.log('User is not logged in. Stomp connection aborted.');
+
       return;
     }
 
@@ -598,7 +620,7 @@
 
     stompClient.connect({}, async function (frame) {
       setConnected(true);
-      console.log('Connected: ' + frame);
+
 
       // 로그인한 회원 고유번호 및 닉네임 저장
       mno = chatUser.mno;
@@ -606,7 +628,7 @@
 
       // 채팅 목록 가져오기
       const result = await getRooms(mno);
-      console.log(result);
+
 
       // 채팅 목록 화면에 출력
       printChatList(result.chatList);
@@ -620,7 +642,7 @@
         return subscription;
       });
 
-      console.log(subscriptions);
+
     });
   }
 
@@ -628,10 +650,6 @@
     const sendTime = new Date(messages.sendTime);
     const options = { hour: "numeric", minute: "numeric" };
 
-    console.log(messages);
-    console.log(messages.userList);
-    console.log(messages.userList.indexOf(sender));
-    console.log(currentRoomId);
 
     // 현재 채팅방에 유저가 있고, 메시지가 현재 방에 속한 경우에만 메시지를 표시
     if (messages.userList.indexOf(sender) > -1 && currentRoomId === messages.roomId) {
@@ -643,7 +661,7 @@
 
       getMembers(messages.roomId)
               .then(result => {
-                console.log('result: ', result);
+
                 displayChatMembers(result.chatMembers);
               })
               .catch(e => console.log(e));
@@ -663,7 +681,7 @@
       stompClient.disconnect();
     }
     setConnected(false);
-    console.log("Disconnected");
+
   }
 
   function sendChat() {
@@ -676,7 +694,7 @@
                 'sender': sender,
                 'message' : inputMessage
               }));
-      $(".chat-input").val('');
+      $(".chat-input").val('').focus();
     }
   }
 
@@ -712,10 +730,9 @@
 
   // loadChat 함수와 showChat 함수를 대체
   function displayChatMessages(chatMessages) {
-    console.log(chatMessages);
-    console.log(chatMessages.length);
+
     if (chatMessages && chatMessages.length > 0) {
-      console.log('displayChatMessages: ', chatMessages);
+
       for (const chatMessage of chatMessages) {
         appendChatMessage(chatMessage);
       }
@@ -728,7 +745,12 @@
   }
 
   async function leaveChat() {
-    const confirmation = confirm("채팅방을 나가면 채팅목록에서 삭제됩니다. \n정말 나가시겠습니까?");
+    const start = new Date(...startDate); // 멘토링 시작 날짜
+    const today = new Date(); //오늘날짜
+    const confirmMessage = start > today
+            ? '채팅방을 나가면 채팅목록에서 삭제됩니다. \n정말 나가시겠습니까?'
+            : '채팅방을 나갈경우 멘토링 환불이 되지않습니다. \n정말 나가시겠습니까?';
+    const confirmation = confirm(confirmMessage);
     if (confirmation) {
       stompClient.send("/pub/chat/leave", {},
               JSON.stringify({
@@ -746,12 +768,9 @@
       const index = roomIds.indexOf(currentRoomId);
       subscriptions[index].unsubscribe();
 
-      // 채팅 목록 가져오기
-      const result = await getRooms(mno);
-      console.log(result);
-
-      // 채팅 목록 화면에 출력
-      printChatList(result.chatList);
+      // 특정 조건을 만족하는 태그 선택
+      const room = $(`.chat-item[id='${currentRoomId}']`);
+      room.remove();
     }
   }
 
@@ -805,6 +824,53 @@
     disconnect();
   }
 </script>
+<script>
+  let isPress = false,   // 마우스를 눌렀을 때
+          prevPosX = 0,      // 이전에 위치한 X값
+          prevPosY = 0;      // 이전에 위치한 Y값
+
+  const $target = document.querySelector(".chat-modal");
+
+  // 드래그 구현에 필요한 이벤트
+  $target.onmousedown = start;
+  $target.onmouseup = end;
+
+  // 요소의 상위 요소 (임시로 window)
+  document.body.onmousemove = move;
+
+  // mousedown
+  function start(e) {
+    prevPosX = e.clientX;
+    prevPosY = e.clientY;
+
+    isPress = true;
+  }
+
+  // mousemove
+  function move(e) {
+    if (!isPress) {
+      return;
+    }
+
+    // 이전 좌표와 현재 좌표 차이값
+    const posX = prevPosX - e.clientX;
+    const posY = prevPosY - e.clientY;
+
+    // 현재 좌표가 이전 좌표로 바뀜
+    prevPosX = e.clientX;
+    prevPosY = e.clientY;
+
+    // left, top으로 이동
+    $target.style.left = ($target.offsetLeft - posX) + "px";
+    $target.style.top = ($target.offsetTop - posY) + "px";
+  }
+
+  // mouseup
+  function end() {
+    isPress = false;
+  }
+</script>
+
 
 
 <script th:inline="javascript">

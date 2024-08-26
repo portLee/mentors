@@ -144,7 +144,7 @@
           <!-- url 헤더 네비게이션 시작 -->
           <ul class="navbar-nav ms-auto">
             <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/board/list">팀 프로젝트</a></li>
-            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/qboard/list">Q&A 게시판</a></li>
+            <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/question/list">Q&A 게시판</a></li>
             <th:block th:if="${#authentication.principal == 'anonymousUser' || #authentication.principal.getPasswd() == '1111'}"> <!-- 비회원 -->
               <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/member/login">로그인</a></li>
               <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/member/agreement">회원가입</a></li>
@@ -372,7 +372,7 @@
   const qmpwChk = document.getElementById('qmpwChk'); // 입력한 현재 비밀번호
   const quitMemberBtn = document.getElementById('quitMemberBtn'); // 모달창에서 회원 탈퇴 버튼
   const str = '[[${memberDTO.nickname}]]';
-  console.log(str);
+
 
 
   if ('[[${#authentication.principal.getNickname}]]' == str.toString()) {
@@ -415,8 +415,7 @@
       e.stopPropagation();
     } else if (result) {
       if (confirm('정말 회원 탈퇴 하시겠습니까?')) {
-        // console.log(mpwChk.value);
-        // console.log(frmQuitPw);
+
         frmQuitPw.submit();
       }
 
@@ -428,7 +427,7 @@
 
   const notifyUser = [[${#authentication.principal}]]
   const isMentorApply = "[[${isMentorApply}]]";
-  console.log(typeof isMentorApply);
+
 
   const mentorApplyBtn = document.getElementById('isMentorApply');
 
@@ -437,7 +436,11 @@
   if ('[[${#authentication.principal.getNickname}]]' == str.toString()) {
     mentorApplyBtn.addEventListener('click', function (e) {
       if (isMentorApply === 'true') {
-        confirm('멘토 신청하시겠습니까?');
+        if (!confirm('멘토 신청하시겠습니까?')) {
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
 
       } else if (isMentorApply === 'false') {
         e.preventDefault();

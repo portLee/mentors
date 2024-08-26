@@ -103,8 +103,9 @@
 </body>
 <script layout:fragment="script" th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
+        const question = [[${question}]];
         const qno = [[${question.qno}]];
-        const isComplete = [[${question.isComplete}]];
+        let isComplete = [[${question.isComplete}]]; // 질문 해결 유무
         const voteList = [[${question.voteList}]];
         const auth = [[${#authentication.principal}]];
         const mno = auth !== 'anonymousUser' ? auth.mno : 0; // 회원 고유번호 테스트
@@ -127,7 +128,6 @@
             e.stopPropagation();
 
             const qnaVoteDTO = { qno: qno, mno: mno }; // 좋아요 정보를 담을 객체
-            console.log(voteList);
 
             if (auth === 'anonymousUser') { // 로그인 안한경우
                 alert('로그인을 해주세요.');
@@ -136,18 +136,14 @@
 
             if (isVote) { // 좋아요를 한경우
                 const result = await removeVote(vno);
-                console.log(result);
                 isVote = !result;
                 likeBtn.innerHTML = '<i class="fa-regular fa-thumbs-up fa-2xl"></i>';
-                alert("추천 취소")
             }
             else {
                 const result = await addVote(qnaVoteDTO);
                 vno = result.vno;
-                console.log(vno);
                 isVote = true;
                 likeBtn.innerHTML = '<i class="fa-solid fa-thumbs-up fa-2xl"></i>';
-                alert("추천 등록")
             }
         });
 
@@ -166,7 +162,7 @@
 
         function printReplies(page, size, goLast){
             getList({qno, page, size, goLast}).then(
-                data => {console.log(data);
+                data => {
                     printList(data.dtoList);
                     printPages(data);
                     printCount(data.total);
@@ -202,7 +198,6 @@
                     date = comment.addDate; // 댓글 등록 날짜
                     dateFomatter = `${date[0]}.${date[1].toString().padStart(2, '0')}.${date[2].toString().padStart(2, '0')}
                         ${date[3]}:${date[4].toString().padStart(2, '0')}`; // 날짜 포맷
-                    console.log(comment);
                     str += `<li class ="comment" id="${comment.ano}">
                                 <div class="comment-header">
                                     <h6><a href="#">${comment.writer}</a></h6>
@@ -221,7 +216,7 @@
                                         <button class="hide-btn btn btn-outline-primary
                                             ${comment.children.length <= 0 ? 'hide' : ''}">△ 숨기기</button>
                                         <button class="reg-reply-btn btn btn-outline-primary">답글달기</button>
-                                        <button class="select-answer-btn btn btn-outline-primary ${comment.select || (auth !== 'anonymousUser' && auth.mno === comment.mno) ? '' : 'hide'}"
+                                        <button class="select-answer-btn btn btn-outline-primary ${comment.select || (auth !== 'anonymousUser' && auth.mno === question.mno) ? '' : 'hide'}"
                                             ${isComplete ? 'disabled' : ''}>
                                             ${comment.select ? '<i class="fa-solid fa-check fa-xl"></i>' : '채택하기'}
                                         </button>
@@ -259,14 +254,12 @@
                     const inputElement = this.closest('.comment').querySelector('.comment-body .mod-input');
                     const pElement = inputElement.previousElementSibling;
                     const modButton = e.target;
-                    console.log(pElement);
 
                     inputElement.classList.toggle('hide');
                     pElement.classList.toggle('hide');
 
                     // input 엘리먼트에 class hide가 존재하지 않는 경우
                     if (!inputElement.classList.contains('hide')) {
-                        console.log(inputElement.value);
                         modButton.textContent = '취소';
                         inputElement.focus();
                         inputElement.addEventListener('keyup', modifyComment); // 키업 이벤트 등록
@@ -280,14 +273,11 @@
 
             // 댓글 수정 함수
             async function modifyComment(e){
-                console.log(e.key);
                 const ano = this.closest('.comment').id; // 댓글 고유 번호
                 const content = e.target; // 댓글 입력창
                 if (e.isComposing || content.value.trim() === '') return; // 아무것도 입력하지 않는 경우
 
                 if (e.key === 'Enter') {
-                    console.log('엔터키 누름');
-                    console.log('댓글작성 내용: ', content.value);
 
                     // 매개변수로 전달할 객체
                     const replyObj = {
@@ -299,11 +289,9 @@
                     await modifyReply(replyObj)
                         .then(result => {
                             content.value = '';
-                            alert(result.ano + '댓글이 수정되었습니다!');
                             printReplies(page, size);
                         })
                         .catch(e => {
-                            console.log(e);
                             alert('댓글 수정이 불가능합니다.');
                         });
                 }
@@ -312,8 +300,11 @@
             // 댓글 삭제 버튼 전체 목록
             document.querySelectorAll('.remove-comment-btn').forEach(removeBtn => {
                removeBtn.addEventListener('click', function (e) { // 댓글 삭제 클릭 이벤트
+                   if (!confirm('댓글을 삭제하시겠습니까?')) {
+                       return;
+                   }
+
                    const comment = this.closest('.comment'); // 댓글
-                   console.log(comment);
                    const ano = comment.id; // 댓글 고유번호
                    const replyCount = comment.querySelector('.btn-area').dataset.replyCount; // 답변 갯수
 
@@ -323,11 +314,9 @@
                    }
 
                    removeReply(ano).then(result => {
-                       alert(result.ano + '댓글이 삭제되었습니다.');
                        page = 1; // 해당 댓글이 삭제시 1페이지로 이동
                        printReplies(page, size);
                    }).catch(e => {
-                       console.log(e);
                    });
                });
             });
@@ -335,14 +324,16 @@
             // 대댓글 삭제 버튼 목록
             document.querySelectorAll('.remove-reply-btn').forEach(removeBtn => {
                 removeBtn.addEventListener('click', function (e) { // 대댓글 삭제 클릭 이벤트
+                    if (!confirm('댓글을 삭제하시겠습니까?')) {
+                        return;
+                    }
+
                     const ano = this.closest('.reply').id; // 대댓글 고유번호
 
                     removeReply(ano).then(result => {
-                        alert(result.ano + '댓글이 삭제되었습니다.');
                         page = 1; // 해당 댓글이 삭제시 1페이지로 이동
                         printReplies(page, size);
                     }).catch(e => {
-                        console.log(e);
                     });
                 });
             });
@@ -352,8 +343,6 @@
                 hideButton.addEventListener('click', function (e) {
                     const replyList = this.closest('.comment').querySelector('.reply-list'); // 대댓글 목록
                     const replyCount = this.closest('.btn-area').dataset.replyCount;
-                    console.log(replyList);
-                    console.log(replyCount);
 
                     replyList.classList.toggle('hide');
 
@@ -399,10 +388,10 @@
                     const replyObj = {ano: ano, qno: qno};
 
                     modifySelect(replyObj).then(result => {
-                        alert(result.ano + '답변이 채택되었습니다.');
+                        alert('답변이 채택되었습니다.');
+                        isComplete = true;
                         printReplies(page, size);
                     }).catch(e => {
-                        console.log(e);
                     });
                 });
             });
@@ -420,7 +409,6 @@
             if (data.next){ // 다음 페이지
                 pageStr += `<li class="page-item"><a class="page-link" data-page="${data.end + 1}">NEXT</a></li>`;
             }
-            console.log(pageStr);
             replyPaging.innerHTML = pageStr;
         }
 
@@ -429,15 +417,12 @@
 
         // 댓글 등록 함수
         async function registerReply(e) {
-            console.log(e.key);
             const content = e.target; // 댓글 작성 내용
             const comment = content.closest('.comment'); // 댓글 가져오기
 
             if (e.isComposing || content.value.trim() === '') return; // 아무것도 입력하지 않는 경우
 
             if (e.key === 'Enter') {
-                console.log('엔터키 누름');
-                console.log('댓글작성 내용: ', content.value);
 
                 // 매개변수로 전달할 객체
                 const replyObj = {
@@ -452,11 +437,9 @@
                 }
 
                 await addReply(replyObj).then(result => { //등록이 된 후 결과처리
-                    alert(result.data.ano);
                     content.value = '';
                     printReplies(1, 10); //댓글목록갱신
                 }).catch(e => {
-                    alert('exception');
                 });
             }
         }

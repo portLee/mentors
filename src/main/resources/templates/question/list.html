@@ -4,8 +4,23 @@
       layout:decorate="~{layout/inc.html}">
 <head>
     <meta charset="UTF-8">
-    <title>팀 프로젝트 소개</title>
+    <title>Q&A 게시판</title>
 </head>
+<style layout:fragment="style">
+    #banner {
+        background-color: #cdf0f0;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+<body>
+<div layout:fragment="banner" id="banner">
+    <div style="text-align: left; width: 1300px;">
+        <h1 style="font-family: 'Orbit', sans-serif;">QnA 게시판</h1>
+    </div>
+</div>
 <body>
 <div layout:fragment="content">
 
@@ -15,7 +30,7 @@
         a { text-decoration: none; }
 
         main { padding-top: 50px; display: flex; }
-        main section { width: 100%; }
+        main section { width: 100%; max-width: 960px; }
         main ul { padding-left: 0 !important; }
         .left-side-menu { margin-top: 44px; margin-right: 40px; width: 168px; }
         .menu { min-width: 160px; }
@@ -46,6 +61,7 @@
         .board-container:hover { background-color: #f8f9fa; }
         .board-title { font-size: 21px; }
         .board-content { color: #495057; }
+        .board-content p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .tag-list { display: flex; }
         .tag-style { background-color: #eff3fa; border-radius: 0.5rem; padding: 4px 10px; margin: 5px 5px 5px 0;
             font-size: 13px; font-weight: 600; cursor: pointer; color: var(--bs-body-color); }
@@ -189,34 +205,6 @@
 <script layout:fragment="script" th:inline="javascript">
 
     document.addEventListener('DOMContentLoaded', function () {
-        // img 빼기
-        const boardContents = document.querySelectorAll('.board-content');
-
-        function filterImgTags(content) {
-            // 적절한 방법으로 DOM을 생성
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = content;
-
-            // <img> 태그를 찾아 제거
-            const imgTags = tempDiv.getElementsByTagName('img');
-            for (let i = imgTags.length - 1; i >= 0; i--) {
-                imgTags[i].parentNode.removeChild(imgTags[i]);
-            }
-
-            // 필터링된 내용을 반환
-            return tempDiv.innerHTML;
-        }
-
-        // 모든 board-content에 대해 작업
-        boardContents.forEach((boardContent) => {
-            const editorContent = boardContent.innerHTML;
-            const filteredContent = filterImgTags(editorContent);
-            console.log('edit: ', editorContent)
-            console.log('filter: ', filteredContent);
-
-            // 필터링된 내용을 해당 board-content에 다시 설정
-            boardContent.innerHTML = filteredContent;
-        });
 
         const formObj = document.querySelector("form[name=frmSearch]");
         const searchInput = document.getElementById('keyword'); // 검색창
@@ -288,14 +276,11 @@
 
         // 해쉬 태그 입력 이벤트
         document.getElementById('tag-input').addEventListener('keyup', function (e) {
-            console.log(e.key);
 
             const hashTag = e.target;
-            console.log(hashTags);
 
             if (hashTag.value.trim() !== '' && e.key === 'Enter') { // 내용 존재, Enter키 입력시 태그 추가
                 const tagName = hashTag.value.trim(); // 입력한 태그 명
-                console.log(tagName);
 
                 hashTagInput.disabled = false; // 해쉬태그 담을 input 활성화
 
@@ -314,12 +299,9 @@
                 e.stopPropagation();
 
                 const tagNameNode = this.firstElementChild; // 첫번째 자식 엘리먼트
-                console.log(tagNameNode);
-                console.log(tagNameNode.textContent);
 
                 // 일치하는 태그 제외하고 새로운 배열 생성
                 hashTags = hashTags.filter(tag => tag !== tagNameNode.textContent);
-                console.log('tagArr: ', hashTags); // 태그를 담은 배열 확인
 
                 hashTagInput.value = ''; // 해쉬태그를 담을 인풋 초기화
                 hashTags.forEach(tag => { // 해쉬 태그를 input에 저장
@@ -343,6 +325,28 @@
 
                 formObj.submit();
             });
+        });
+
+        // 텍스트 필터링
+        const boardContents = document.querySelectorAll('.board-content');
+
+        function filterText(content) {
+            // 적절한 방법으로 DOM을 생성
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            tempDiv.innerHTML = `<p>${tempDiv.innerText}</p>`;
+
+            // 필터링된 내용을 반환
+            return tempDiv.innerHTML;
+        }
+
+        // 모든 board-content에 대해 작업
+        boardContents.forEach((boardContent) => {
+            const editorContent = boardContent.innerHTML;
+            const filteredContent = filterText(editorContent);
+
+            // 필터링된 내용을 해당 board-content에 다시 설정
+            boardContent.innerHTML = filteredContent;
         });
     });
 

@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -68,12 +69,12 @@ public class ChatServiceImpl implements ChatService{
                 .build());
 
         // 채팅 초대시 초대 메세지 전송
-        chatMessageMapper.insertMessage(
-                ChatMessageDTO.builder()
+        chatMessageMapper.insertMessage(ChatMessageDTO.builder()
                 .mno(mno)
                 .roomId(roomId)
                 .sender(nickname)
                 .message(nickname + "님을 초대하였습니다.")
+                .sendTime(LocalDateTime.now())
                 .build());
     }
 
@@ -102,11 +103,14 @@ public class ChatServiceImpl implements ChatService{
     // 채팅방에서 나간 회원정보 삭제
     @Override
     public void removeChatMember(String roomId, Long mno, Long mbNo, LocalDate startDate) {
+        log.info("startDate: " + startDate);
+
         ChatListDTO chatListDTO = ChatListDTO.builder()
                 .roomId(roomId)
                 .mno(mno)
                 .build();
         chatRoomMapper.deleteChatMember(chatListDTO);
+
         mainMapper.updateCurPeople(roomId); // 메인 게시판 현재인원 업데이트
 
         if (startDate.isBefore(LocalDate.now())) { // 멘토링 시작날짜보다 이전일 경우
