@@ -18,6 +18,27 @@ class BoardMapperTest {
     private BoardMapper boardMapper;
 
     @Test
+    void insertBoardTest() {
+
+        for (int i = 1; i <= 10000; i++) {
+            BoardVO boardVO = BoardVO.builder()
+                    .mno((long) i)
+                    .writer("작성자" + i)
+                    .title("제목" + i)
+                    .content("내용" + i)
+                    .build();
+
+            boardMapper.insertBoard(boardVO);
+
+            HashTagVO hashTagVO = HashTagVO.builder()
+                    .boardNo(boardVO.getBoardNo())
+                    .tagName("tagName" + i)
+                    .build();
+            boardMapper.insertTag(hashTagVO);
+        }
+    }
+
+    @Test
     void selectBoardListTest() {
         String sort = "reply";
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
